@@ -1,10 +1,45 @@
 // React
 import { useState, useEffect } from 'react';
 
+// NPMs
+import FENBoard from "fen-chess-board";
+
+// Components
+import Chessgrid from './components/Chessgrid';
+
+// Icons
+import { ReactComponent as WhiteKing } from './imgs/pieces/K.svg'
+import { ReactComponent as BlackKing } from './imgs/pieces/kn.svg'
+import { ReactComponent as WhiteQueen } from './imgs/pieces/Q.svg'
+import { ReactComponent as BlackQueen } from './imgs/pieces/qn.svg'
+import { ReactComponent as WhiteRook } from './imgs/pieces/R.svg'
+import { ReactComponent as BlackRook } from './imgs/pieces/rn.svg'
+import { ReactComponent as WhiteKnight } from './imgs/pieces/N.svg'
+import { ReactComponent as BlackKnight } from './imgs/pieces/nr.svg'
+import { ReactComponent as WhiteBishop } from './imgs/pieces/B.svg'
+import { ReactComponent as BlackBishop } from './imgs/pieces/bn.svg'
+import { ReactComponent as WhitePawn } from './imgs/pieces/P.svg'
+import { ReactComponent as BlackPawn } from './imgs/pieces/pn.svg'
+
 // Tailwind
 import './tailwind/output.css'
 
 const fenStart = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+
+const piece = {
+  'K' : <WhiteKing />,
+  'k' : <BlackKing />,
+  'Q' : <WhiteQueen />,
+  'q' : <BlackQueen />,
+  'R' : <WhiteRook />,
+  'r' : <BlackRook />,
+  'N' : <WhiteKnight />,
+  'n' : <BlackKnight />,
+  'B' : <WhiteBishop />,
+  'b' : <BlackBishop />,
+  'P' : <WhitePawn />,
+  'p' : <BlackPawn />
+}
 
 function App() {
 
@@ -22,9 +57,18 @@ function App() {
   }, [])
 
   return (
-    <div className="App">
-      { board }
-    </div>
+    <section className='flex h-screen justify-center items-center'>
+      <div className="grid grid-cols-8 gap-0">
+        { board && (new FENBoard(board)).board.map((row, c) => {
+          return row.map((col, c2) => {
+            let offset = c % 2 ? true : false
+            return (
+              <Chessgrid key={ 'grid' + c + c2 } piece={ piece[col] } isBlack={ c % 2 === 0 ? c2 % 2 : c2 % 2 === 0 } />
+            )
+          })
+        }) }
+      </div>
+    </section>
   );
 }
 
