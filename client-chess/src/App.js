@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+// React
+import { useState, useEffect } from 'react';
+
+// Tailwind
+import './tailwind/output.css'
+
+const fenStart = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 
 function App() {
+
+  const [board, setBoard] = useState()
+
+  useEffect(() => {
+    fetch('http://localhost:5001?' + new URLSearchParams({ start: true }), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.text())
+    .then(data => setBoard(JSON.parse(atob(data)).fen))
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      { board }
     </div>
   );
 }
