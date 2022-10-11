@@ -46,6 +46,7 @@ function App() {
   useEffect(() => {
     if (!chess) return
     if (chess.status.isFinished) return console.log('FINITO')
+    if (chess.status.turn === 'white') return
     console.log(chess)
     const randomPiece = Object.keys(chess.moves)[Math.floor(Math.random() * Object.keys(chess.moves).length)]
     const randomPos = chess.moves[randomPiece][Math.floor(Math.random() * chess.moves[randomPiece].length)]
@@ -78,8 +79,9 @@ function App() {
       <div className="grid grid-cols-8 gap-0">
         { chess && (new FENBoard(chess.fen)).board.map((row, c) => {
           return row.map((col, c2) => {
+            const cols = 'abcdefgh'
             return (
-              <Chessgrid key={ 'grid' + c + c2 } piece={ piece[col] } isBlack={ c % 2 === 0 ? c2 % 2 : c2 % 2 === 0 } />
+              <Chessgrid key={ 'grid' + c + c2 } piece={ piece[col] } pieceName={ col } gridName={ cols[c2] + Math.abs(8 - c) } isBlack={ c % 2 === 0 ? c2 % 2 : c2 % 2 === 0 } />
             )
           })
         }) }

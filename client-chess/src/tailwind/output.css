@@ -630,6 +630,11 @@ video {
   background-color: rgb(138 136 121 / var(--tw-bg-opacity));
 }
 
+.bg-\[\#ff0000\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+}
+
 .child\:h-\[60px\] > * {
   height: 60px;
 }
