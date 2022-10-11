@@ -24,8 +24,6 @@ import { ReactComponent as BlackPawn } from './imgs/pieces/pn.svg'
 // Tailwind
 import './tailwind/output.css'
 
-const fenStart = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-
 const piece = {
   'K' : <WhiteKing />,
   'k' : <BlackKing />,
@@ -43,7 +41,26 @@ const piece = {
 
 function App() {
 
-  const [board, setBoard] = useState()
+  const [chess, setChess] = useState()
+
+  useEffect(() => {
+    if (!chess) return
+    if (chess.status.isFinished) return console.log('FINITO')
+    console.log(chess)
+    const randomPiece = Object.keys(chess.moves)[Math.floor(Math.random() * Object.keys(chess.moves).length)]
+    const randomPos = chess.moves[randomPiece][Math.floor(Math.random() * chess.moves[randomPiece].length)]
+    console.log(randomPiece, randomPos)
+    setTimeout(() => {
+      fetch('http://localhost:5001?' + new URLSearchParams({ fen: chess.fen, from: randomPiece, to: randomPos }, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }))
+      .then(res => res.text())
+      .then(data => setChess(JSON.parse(atob(data))))
+    }, 1E3)
+  }, [chess])
 
   useEffect(() => {
     fetch('http://localhost:5001?' + new URLSearchParams({ start: true }), {
@@ -53,15 +70,14 @@ function App() {
       }
     })
     .then(res => res.text())
-    .then(data => setBoard(JSON.parse(atob(data)).fen))
+    .then(data => setChess(JSON.parse(atob(data))))
   }, [])
 
   return (
     <section className='flex h-screen justify-center items-center'>
       <div className="grid grid-cols-8 gap-0">
-        { board && (new FENBoard(board)).board.map((row, c) => {
+        { chess && (new FENBoard(chess.fen)).board.map((row, c) => {
           return row.map((col, c2) => {
-            let offset = c % 2 ? true : false
             return (
               <Chessgrid key={ 'grid' + c + c2 } piece={ piece[col] } isBlack={ c % 2 === 0 ? c2 % 2 : c2 % 2 === 0 } />
             )
