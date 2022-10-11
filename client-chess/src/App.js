@@ -42,6 +42,26 @@ const piece = {
 function App() {
 
   const [chess, setChess] = useState()
+  const [holding, setHolding] = useState()
+
+  useEffect(() => {
+    // console.log('holding:')
+    // console.log(holding)
+  }, [holding])
+
+  useEffect(() => {
+      const mouseUpEvent = () => {
+          if (!holding) return
+          console.log(`dropped`)
+          setHolding(null)
+      }
+
+      window.addEventListener('mouseup', mouseUpEvent)
+
+      return () => {
+          window.removeEventListener('mouseup', mouseUpEvent)
+      }
+  })
 
   useEffect(() => {
     if (!chess) return
@@ -81,7 +101,7 @@ function App() {
           return row.map((col, c2) => {
             const cols = 'abcdefgh'
             return (
-              <Chessgrid key={ 'grid' + c + c2 } piece={ piece[col] } pieceName={ col } gridName={ cols[c2] + Math.abs(8 - c) } isBlack={ c % 2 === 0 ? c2 % 2 : c2 % 2 === 0 } />
+              <Chessgrid key={ 'grid' + c + c2 } setHolding={ setHolding } piece={ piece[col] } pieceName={ col } gridName={ cols[c2] + Math.abs(8 - c) } isBlack={ c % 2 === 0 ? c2 % 2 : c2 % 2 === 0 } />
             )
           })
         }) }
