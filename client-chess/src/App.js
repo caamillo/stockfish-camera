@@ -46,13 +46,19 @@ function App() {
 
   useEffect(() => {
     // console.log('holding:')
-    // console.log(holding)
+    console.log(holding)
   }, [holding])
 
   useEffect(() => {
-      const mouseUpEvent = () => {
+      const mouseUpEvent = (e) => {
           if (!holding) return
           console.log(`dropped`)
+          let to = document.elementFromPoint(e.clientX, e.clientY)
+          while (to.id == null || to.id.search('-grid') < 0) {
+            to = to.parentNode
+          }
+          console.log(to)
+          to.appendChild(holding.piece)
           setHolding(null)
       }
 
