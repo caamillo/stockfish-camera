@@ -6,11 +6,11 @@ function Chessgrid({ piece, pieceName, gridName, isBlack, setHolding }) {
     const dragStart = (e) => {
         console.log(`holding ${ pieceName } (${ gridName })`)
         let element = e.target
-        while (element.id == null || element.id.search('-piece') < 0) {
+        while (element.id == null || element.id.search('-grid') < 0) {
             element = element.parentNode
         }
-        setHolding(element)
-        console.log(element)
+        setHolding(element.id.slice(0, 2))
+        console.log(element.id.slice(0, 2))
     }
 
     return (
