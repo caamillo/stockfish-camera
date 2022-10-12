@@ -62,7 +62,19 @@ function App() {
           while (to.id == null || to.id.search('-grid') < 0) {
             to = to.parentNode
           }
-          if (Object.keys(chess.moves).includes(holding.from.id.slice(0, 2)) && chess.moves[holding.from.id.slice(0, 2)].includes(to.id.slice(0, 2))) to.appendChild(holding.piece)
+          if (Object.keys(chess.moves).includes(holding.from.id.slice(0, 2)) && chess.moves[holding.from.id.slice(0, 2)].includes(to.id.slice(0, 2))) {
+            to.appendChild(holding.piece)
+            setTimeout(() => {
+              fetch('http://localhost:5001?' + new URLSearchParams({ fen: chess.fen, from: holding.from.id.slice(0, 2), to: to.id.slice(0, 2) }, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              }))
+              .then(res => res.text())
+              .then(data => setChess(JSON.parse(atob(data))))
+            }, 1E3)
+          }
           setHolding(null)
       }
 
@@ -76,21 +88,6 @@ function App() {
   useEffect(() => {
     if (!chess) return
     if (chess.status.isFinished) return console.log('FINITO')
-    if (chess.status.turn === 'white') return
-    console.log(chess)
-    const randomPiece = Object.keys(chess.moves)[Math.floor(Math.random() * Object.keys(chess.moves).length)]
-    const randomPos = chess.moves[randomPiece][Math.floor(Math.random() * chess.moves[randomPiece].length)]
-    console.log(randomPiece, randomPos)
-    setTimeout(() => {
-      fetch('http://localhost:5001?' + new URLSearchParams({ fen: chess.fen, from: randomPiece, to: randomPos }, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }))
-      .then(res => res.text())
-      .then(data => setChess(JSON.parse(atob(data))))
-    }, 1E3)
   }, [chess])
 
   useEffect(() => {
