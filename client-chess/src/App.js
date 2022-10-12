@@ -47,6 +47,11 @@ function App() {
   useEffect(() => {
     // console.log('holding:')
     console.log(holding)
+    if (holding && Object.keys(chess.moves).includes(holding.from.id.slice(0, 2))) {
+      for (let move of chess.moves[holding.from.id.slice(0, 2)]) {
+        document.getElementById(move + '-grid').style.backgroundColor = '#ff0000'
+      }
+    }
   }, [holding])
 
   useEffect(() => {
@@ -57,8 +62,7 @@ function App() {
           while (to.id == null || to.id.search('-grid') < 0) {
             to = to.parentNode
           }
-          console.log(to)
-          to.appendChild(holding.piece)
+          if (Object.keys(chess.moves).includes(holding.from.id.slice(0, 2)) && chess.moves[holding.from.id.slice(0, 2)].includes(to.id.slice(0, 2))) to.appendChild(holding.piece)
           setHolding(null)
       }
 
@@ -107,7 +111,7 @@ function App() {
           return row.map((col, c2) => {
             const cols = 'abcdefgh'
             return (
-              <Chessgrid key={ 'grid' + c + c2 } setHolding={ setHolding } piece={ piece[col] } pieceName={ col } gridName={ cols[c2] + Math.abs(8 - c) } isBlack={ c % 2 === 0 ? c2 % 2 : c2 % 2 === 0 } />
+              <Chessgrid key={ 'grid' + c + c2 } setHolding={ setHolding } piece={ piece[col] } pieceName={ col.toUpperCase() } gridName={ cols[c2].toUpperCase() + Math.abs(8 - c) } isBlack={ c % 2 === 0 ? c2 % 2 : c2 % 2 === 0 } />
             )
           })
         }) }
